@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#0d1117">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23151c28'/><path d='M28 28 L48 48 M48 28 L28 48' stroke='%23ff7a59' stroke-width='8' stroke-linecap='round'/><circle cx='70' cy='70' r='14' stroke='%2331d3b3' stroke-width='7' fill='none'/></svg>">
     <title>دوز | Tic-Tac-Toe Premium</title>
     <style>
         /* ============================================================
-   DOOZ — Premium Tic-Tac-Toe  •  Design System
-   ============================================================ */
+DOOZ — Premium Tic-Tac-Toe  •  Design System
+============================================================ */
         *,
         *::before,
         *::after {
@@ -593,8 +595,13 @@
             border-radius: 22px;
             background: var(--surface);
             border: 1px solid var(--border);
-            box-shadow: var(--shadow-2);
-            transform: rotate(-1.6deg)
+            box-shadow: var(--shadow-2), 0 0 40px -10px rgba(245, 182, 56, 0.15);
+            transition: transform var(--tr), box-shadow var(--tr);
+        }
+
+        .demo-wrap:hover .demo-frame {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-2), 0 0 60px -5px rgba(245, 182, 56, 0.25);
         }
 
         .demo-cell {
@@ -1218,7 +1225,7 @@
         /* overlays on board */
         .board-overlay {
             position: absolute;
-            inset: -8px;
+            inset: 0;
             z-index: 8;
             border-radius: 22px;
             display: grid;
@@ -2214,7 +2221,6 @@
 </head>
 
 <body>
-
     <header class="app-header">
         <div class="header-in">
             <button id="logo-btn" class="brand" aria-label="بازگشت به خانه">
@@ -2232,9 +2238,7 @@
             </div>
         </div>
     </header>
-
     <main class="shell" id="app">
-
         <!-- ================= HOME ================= -->
         <section id="view-home" class="view active" aria-labelledby="home-h">
             <div class="home-grid">
@@ -2270,7 +2274,6 @@
                 </div>
             </div>
         </section>
-
         <!-- ================= SETUP ================= -->
         <section id="view-setup" class="view" aria-labelledby="setup-h">
             <div class="view-head">
@@ -2313,7 +2316,6 @@
                 <button id="btn-start" class="btn btn-primary btn-lg btn-block" data-icon="play">شروع</button>
             </div>
         </section>
-
         <!-- ================= GAME ================= -->
         <section id="view-game" class="view" aria-labelledby="game-h">
             <h2 id="game-h" class="sr-only">صفحهٔ بازی</h2>
@@ -2368,7 +2370,6 @@
                             data-icon="home"></button>
                     </div>
                 </div>
-
                 <aside class="game-side">
                     <div class="card">
                         <span class="card-title" data-icon="trophy">امتیازها</span>
@@ -2403,7 +2404,6 @@
                 </aside>
             </div>
         </section>
-
         <!-- ================= STATS ================= -->
         <section id="view-stats" class="view" aria-labelledby="stats-h">
             <div class="view-head">
@@ -2430,24 +2430,20 @@
                 <div id="hist-wrap"></div>
             </div>
         </section>
-
     </main>
-
     <div class="modal-root" id="modal-root"></div>
     <div class="toast-root" id="toast-root"></div>
     <div class="sr-only" id="sr-live" aria-live="polite"></div>
     <noscript>
         <p style="padding:30px;text-align:center">برای اجرای بازی، جاوااسکریپت مرورگر را فعال کنید.</p>
     </noscript>
-
     <script>
         (function () {
             'use strict';
             /* ================================================================
-               DOOZ — modules: Utils / Icons / i18n / Storage / Audio / Haptics
-               Engine / AI / Achievements / Daily / UI / Router / Modals / App
-               ================================================================ */
-
+            DOOZ — modules: Utils / Icons / i18n / Storage / Audio / Haptics
+            Engine / AI / Achievements / Daily / UI / Router / Modals / App
+            ================================================================ */
             /* ---------------- Utilities ---------------- */
             const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
             const clampN = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -2485,7 +2481,6 @@
                 for (const kid of kids.flat(9)) { if (kid == null || kid === false) continue; el.append(kid.nodeType ? kid : document.createTextNode(kid)); }
                 return el;
             }
-
             /* ---------------- Icons ---------------- */
             const ICONS = {
                 play: '<path d="M7 4.6v14.8L20 12z" fill="currentColor" stroke="none"/>',
@@ -2528,7 +2523,6 @@
             };
             function iconSVG(name, cls) { return '<svg class="ic ' + (cls || '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>'; }
             function injectIcons(root) { (root || document).querySelectorAll('[data-icon]').forEach(el => { el.insertAdjacentHTML('afterbegin', iconSVG(el.dataset.icon, el.dataset.size || '')); }); }
-
             /* ---------------- i18n ---------------- */
             const i18n = {
                 fa: {
@@ -2545,7 +2539,6 @@
                 }
             };
             const L = i18n.fa, T = (k) => L[k];
-
             /* ---------------- Storage / persistence ---------------- */
             const KEY = 'doonz.premium.v1', SCHEMA = 1, HIST_CAP = 60;
             function defaultData() {
@@ -2592,7 +2585,6 @@
                 get settings() { return this.data.settings; },
                 wipeAll() { store.del(KEY); this.data = defaultData(); this.save(); }
             };
-
             /* ---------------- Audio (Web Audio, synthesized) ---------------- */
             const AudioSys = (function () {
                 let ctx = null, master = null;
@@ -2633,7 +2625,6 @@
                 return S;
             })();
             function sfx(name) { try { AudioSys[name] && AudioSys[name](); } catch (e) { } }
-
             /* ---------------- Haptics ---------------- */
             function vib(pattern) {
                 try {
@@ -2641,7 +2632,6 @@
                     if (navigator.vibrate) navigator.vibrate(pattern);
                 } catch (e) { }
             }
-
             /* ---------------- Toast ---------------- */
             function toast(msg, type, icon) {
                 const root = $('#toast-root');
@@ -2652,10 +2642,9 @@
                 while (root.children.length > 3) root.firstChild.remove();
                 setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 320); }, 3100);
             }
-
             /* ================================================================
-               GAME ENGINE (pure)
-               ================================================================ */
+            GAME ENGINE (pure)
+            ================================================================ */
             const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
             const LINE_TYPE = [0, 0, 0, 1, 1, 1, 2, 2]; // row/col/diag
             const Engine = {
@@ -2686,10 +2675,9 @@
                 }
                 return best;
             }
-
             /* ================================================================
-               AI ENGINE
-               ================================================================ */
+            AI ENGINE
+            ================================================================ */
             const AI = {
                 delays: { easy: [300, 520], normal: [420, 700], hard: [520, 820], expert: [520, 900], impossible: [520, 900], daily: [500, 850] },
                 strengthOf(d) { return d === 'daily' ? 'expert' : d; },
@@ -2762,10 +2750,9 @@
                     return pick(empt);
                 }
             };
-
             /* ================================================================
-               DAILY CHALLENGE
-               ================================================================ */
+            DAILY CHALLENGE
+            ================================================================ */
             const Daily = {
                 gen() {
                     const key = dateKey(), rng = mulberry32(hashStr('doonz:' + key));
@@ -2776,10 +2763,9 @@
                     return { key, symbol, board: b };
                 }
             };
-
             /* ================================================================
-               ACHIEVEMENTS
-               ================================================================ */
+            ACHIEVEMENTS
+            ================================================================ */
             const ACH = [
                 { id: 'first_win', name: 'اولین برد', desc: 'نخستین پیروزی در برابر هوش مصنوعی', icon: 'trophy' },
                 { id: 'streak3', name: 'سه‌گانه', desc: '۳ برد پیاپی در برابر هوش مصنوعی', icon: 'zap' },
@@ -2806,10 +2792,9 @@
                 setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, 3600);
                 if ($('#view-stats').classList.contains('active')) renderStatsView();
             }
-
             /* ================================================================
-               APP STATE
-               ================================================================ */
+            APP STATE
+            ================================================================ */
             const S = {
                 active: false, view: 'home',
                 mode: null, isAI: false, difficulty: null, bestOf: 1, isDaily: false, dailySeed: null,
@@ -2824,10 +2809,9 @@
                 matchOver: false
             };
             function namesForSetup() { return Storage.settings.names; }
-
             /* ================================================================
-               THEME / HEADER
-               ================================================================ */
+            THEME / HEADER
+            ================================================================ */
             const Theme = {
                 mq: window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null,
                 resolve(pref) { return pref === 'system' ? (this.mq && this.mq.matches ? 'dark' : 'light') : pref; },
@@ -2850,7 +2834,6 @@
                 }
             };
             if (Theme.mq && Theme.mq.addEventListener) { try { Theme.mq.addEventListener('change', () => { if (Storage.settings.theme === 'system') Theme.apply(); }); } catch (e) { } }
-
             function updateSoundBtn() {
                 const b = $('#btn-sound'), on = Storage.settings.sound;
                 b.innerHTML = iconSVG(on ? 'vol' : 'volX');
@@ -2858,10 +2841,9 @@
                 b.setAttribute('aria-label', on ? 'قطع صدا' : 'وصل صدا');
                 b.setAttribute('aria-pressed', String(on));
             }
-
             /* ================================================================
-               MARKS / BOARD RENDERING
-               ================================================================ */
+            MARKS / BOARD RENDERING
+            ================================================================ */
             const MARK = {
                 X: '<svg class="mark mark-x" viewBox="0 0 100 100" aria-hidden="true"><path class="s1" d="M24 24 76 76" pathLength="1"/><path class="s2" d="M76 24 24 76" pathLength="1"/></svg>',
                 O: '<svg class="mark mark-o" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="29" pathLength="1"/></svg>'
@@ -2917,7 +2899,6 @@
             function renderAllCells() { for (let i = 0; i < 9; i++)renderCell(i, false); }
             function lockBoard(locked) { $('#board').classList.toggle('locked', locked); }
             function setTurnGhost() { $('#board').dataset.turn = S.current; }
-
             /* win line */
             function drawWinLine() {
                 if (!S.winLine) return;
@@ -2942,10 +2923,9 @@
             }
             function hideWinLine() { $('#win-svg').classList.add('hidden'); }
             window.addEventListener('resize', () => { if (S.over && S.winLine) { hideWinLine(); drawWinLine(); } });
-
             /* ================================================================
-               GAME FLOW
-               ================================================================ */
+            GAME FLOW
+            ================================================================ */
             function startMatch(cfg) {
                 S.mode = cfg.mode; S.isAI = cfg.isAI; S.difficulty = cfg.difficulty || null;
                 S.bestOf = cfg.bestOf || 1; S.isDaily = !!cfg.isDaily; S.dailySeed = cfg.dailySeed || null;
@@ -2954,7 +2934,6 @@
                 S.starter = cfg.firstMark; S.round = 1;
                 S.scores = { X: 0, O: 0, D: 0 }; S.matchOver = false;
                 S.active = true;
-                $('#overlay-open') && $('#overlay-open').remove();
                 $('#result-overlay').classList.remove('show');
                 $('#pause-overlay').classList.remove('show');
                 showView('game');
@@ -3054,7 +3033,6 @@
                 }, 500);
             }
             function stopTicker() { if (S.tickTimer) { clearInterval(S.tickTimer); S.tickTimer = null; } }
-
             function scheduleAI() {
                 if (S.over || S.paused) return;
                 S.thinking = true; updateTurnUI();
@@ -3172,7 +3150,6 @@
                 if (S.matchOver && S.isAI && (S.scores.X >= Math.ceil(S.bestOf / 2) ? S.userMark === 'X' : S.userMark === 'O')) unlockAch('series_win');
                 Storage.save();
             }
-
             /* ---------------- result overlay ---------------- */
             function showResultOverlay() {
                 const card = $('#result-card'); card.innerHTML = '';
@@ -3225,7 +3202,6 @@
                 startRound();
                 sfx('click'); toast('دور از نو شروع شد', 'info', 'refresh');
             }
-
             /* ---------------- undo / redo / pause ---------------- */
             function canUndo() {
                 if (!S.active || S.over || S.thinking || S.paused) return false;
@@ -3237,9 +3213,8 @@
                 if (!canUndo()) { sfx('invalid'); return; }
                 clearTimeout(S.aiTimer); S.aiTimer = null;
                 if (S.isAI) {
-                    // undo until a human move is removed (usually 2 plies)
                     while (S.movesSeq.length) {
-                        const i = S.movesSeq.pop(), m = S.current == null ? null : null;
+                        const i = S.movesSeq.pop();
                         const placedMark = S.board[i]; S.board[i] = null; renderCell(i, false);
                         S.redoStack.push({ i, m: placedMark });
                         if (placedMark === S.userMark) break;
@@ -3282,7 +3257,6 @@
                 }
                 sfx('click');
             }
-
             /* ---------------- share ---------------- */
             function shareResult() {
                 const w = S.winner;
@@ -3306,10 +3280,9 @@
                     document.body.append(ta); ta.select(); document.execCommand('copy'); ta.remove(); done();
                 } catch (e) { toast('کپی ممکن نشد', 'danger', 'info'); }
             }
-
             /* ================================================================
-               MODAL SYSTEM
-               ================================================================ */
+            MODAL SYSTEM
+            ================================================================ */
             const Modal = {
                 cur: null,
                 open(opts) {
@@ -3363,10 +3336,9 @@
                 });
                 okBtn.addEventListener('click', () => { Modal.close(); if (opts.onOk) opts.onOk(); });
             }
-
             /* ================================================================
-               SETTINGS MODAL
-               ================================================================ */
+            SETTINGS MODAL
+            ================================================================ */
             function openSettings() {
                 const st = Storage.settings;
                 const body = h('div', {});
@@ -3510,10 +3482,9 @@
                 fr.onerror = () => toast('خواندن فایل ممکن نشد', 'danger', 'info');
                 fr.readAsText(file);
             }
-
             /* ================================================================
-               HELP / ONBOARDING / REPLAY
-               ================================================================ */
+            HELP / ONBOARDING / REPLAY
+            ================================================================ */
             function openHelp() {
                 const body = h('div', {},
                     h('div', { class: 'help-sec' }, h('h4', { html: iconSVG('target') + 'هدف بازی' }),
@@ -3574,7 +3545,6 @@
                 });
                 render();
             }
-
             /* ---------------- replay ---------------- */
             function openReplay(rec) {
                 if (!rec || !Array.isArray(rec.seq) || !rec.seq.length) { toast('حرکتی برای نمایش نیست', 'info', 'info'); return; }
@@ -3624,13 +3594,16 @@
                 });
             }
             function openReplayLast() {
-                const last = Storage.data.history.find(r => r.seq && r.seq.length === S.movesSeq.length && r.ts > Date.now() - 1000 * 60 * 5) || Storage.data.history[0];
-                openReplay({ seq: S.movesSeq.slice(), first: S.round % 2 === 1 ? S.starter : other(S.starter) } || last);
+                if (S.movesSeq.length > 0) {
+                    openReplay({ seq: S.movesSeq.slice(), first: S.round % 2 === 1 ? S.starter : other(S.starter) });
+                } else {
+                    const last = Storage.data.history[0];
+                    openReplay(last);
+                }
             }
-
             /* ================================================================
-               STATS VIEW
-               ================================================================ */
+            STATS VIEW
+            ================================================================ */
             function renderStatsView() {
                 const st = Storage.data.stats;
                 const ov = $('#st-overview'); ov.innerHTML = '';
@@ -3711,10 +3684,9 @@
                 });
                 wrap.append(ul);
             }
-
             /* ================================================================
-               SETUP VIEW
-               ================================================================ */
+            SETUP VIEW
+            ================================================================ */
             const SU = { mode: 'ai', diff: null, symbol: null, first: null };
             function goSetup(preset) {
                 const set = Storage.settings;
@@ -3849,10 +3821,9 @@
                 sfx('notify');
             }
             function collectNamesSafe() {/* names edited only in setup/settings */ }
-
             /* ================================================================
-               DEMO BOARD (home ambient)
-               ================================================================ */
+            DEMO BOARD (home ambient)
+            ================================================================ */
             const Demo = {
                 cells: [], timers: [],
                 scripts: [
@@ -3888,10 +3859,9 @@
                 },
                 stop() { this.clear(); }
             };
-
             /* ================================================================
-               ROUTER / HOME
-               ================================================================ */
+            ROUTER / HOME
+            ================================================================ */
             function showView(name) {
                 S.view = name;
                 $$('.view').forEach(v => v.classList.remove('active'));
@@ -3924,10 +3894,9 @@
                 S.paused = true;
             }
             function announce(msg) { const el = $('#sr-live'); el.textContent = ''; setTimeout(() => { el.textContent = msg; }, 30); }
-
             /* ================================================================
-               FULLSCREEN
-               ================================================================ */
+            FULLSCREEN
+            ================================================================ */
             function toggleFS() {
                 const d = document;
                 try {
@@ -3943,10 +3912,9 @@
                     sfx('click');
                 } catch (e) { toast('تمام‌صفحه در دسترس نیست', 'info', 'info'); }
             }
-
             /* ================================================================
-               GLOBAL EVENTS / INIT
-               ================================================================ */
+            GLOBAL EVENTS / INIT
+            ================================================================ */
             function bindGlobal() {
                 $('#logo-btn').addEventListener('click', () => { sfx('click'); goHome(false); });
                 $('#btn-help').addEventListener('click', () => { sfx('click'); openHelp(); });
@@ -4008,7 +3976,6 @@
                     if (document.hidden && S.active && !S.over && S.isAI && !S.paused && S.view === 'game') togglePause();
                 });
             }
-
             function init() {
                 Storage.load();
                 buildBoard();
